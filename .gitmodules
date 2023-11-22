@@ -1,0 +1,6 @@
+[submodule "europa/op-stack/op-geth"]
+	path = europa/op-stack/op-geth
+	url = https://github.com/ethereum-optimism/op-geth.git
+[submodule "europa/op-stack/optimism"]
+	path = europa/op-stack/optimism
+	url = https://github.com/ethereum-optimism/optimism.git
