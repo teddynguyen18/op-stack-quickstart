@@ -27,7 +27,7 @@ services:
       - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
       - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
     environment:
-      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_URL=${L1_RPC_URL}
       - L1_CHAIN_ID=1337
       - ADMIN_ADDRESS=${ADMIN_ADDRESS}
       - ADMIN_PRIVATE_KEY=${ADMIN_PRIVATE_KEY}
@@ -50,7 +50,7 @@ services:
       - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
       - .data/artifacts:/opt/artifacts
     environment:
-      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_URL=${L1_RPC_URL}
       - DEPLOYMENT_CONTEXT=europa
       - GENESIS_FILE=/opt/artifacts/genesis.json
       - ROLLUP_FILE=/opt/artifacts/rollup.json
@@ -87,7 +87,7 @@ services:
       - JWT_FILE=/opt/artifacts/jwt.txt
       - L2_URL=http://op-geth:8551
       - SEQUENCER_PRIVATE_KEY=${SEQUENCER_PRIVATE_KEY}
-      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_URL=${L1_RPC_URL}
       - L1_RPC_KIND=basic
     depends_on:
       - op-geth
@@ -98,7 +98,7 @@ services:
       dockerfile: Dockerfile.batcher
     environment:
       - L2_RPC_URL=http://op-geth:8545
-      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_URL=${L1_RPC_URL}
       - ROLLUP_RPC_URL=http://op-node:8547
       - BATCHER_PRIVATE_KEY=${BATCHER_PRIVATE_KEY}
     depends_on:
@@ -112,7 +112,7 @@ services:
     volumes:
       - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
     environment:
-      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_URL=${L1_RPC_URL}
       - ROLLUP_RPC_URL=http://op-node:8547
       - PROPOSER_PRIVATE_KEY=${PROPOSER_PRIVATE_KEY}
       - DEPLOYMENT_CONTEXT=europa
