@@ -1,8 +1,8 @@
 const { parseEther } = require('ethers');
 
-const { INITIAL_AMOUNT = '0.2', ADMIN_ADRESS, PROPOSER_ADDRESS, BATCHER_ADDRESS } = process.env;
+const { INITIAL_AMOUNT = '0.2', ADMIN_ADDRESS, PROPOSER_ADDRESS, BATCHER_ADDRESS } = process.env;
 
-const ADDRESSES = [ADMIN_ADRESS, PROPOSER_ADDRESS, BATCHER_ADDRESS];
+const ADDRESSES = [ADMIN_ADDRESS, PROPOSER_ADDRESS, BATCHER_ADDRESS];
 
 const ACTION_TIMER = 'Initial funding execution time';
 
