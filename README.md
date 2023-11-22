@@ -37,3 +37,6 @@ Rename `.env.example` to `.env` then fill out the values
 ```shell
 docker compose up
 ```
+
+Layer 1 rpc is exposed to port 8545\
+Op stack rpc is exposed to port 8546
