@@ -9,7 +9,7 @@ services:
       - BATCHER_ADDRESS=${BATCHER_ADDRESS}
       - PROPOSER_ADDRESS=${PROPOSER_ADDRESS}
       # - VERBOSE=true # more verbose logging
-      # - FORK_NETWORK=sepolia # fork from mainnet, sepolia, goerli
+      - FORK_NETWORK=mainnet # fork from mainnet, sepolia, goerli
       - BLOCK_TIME=12
       - INITIAL_AMOUNT=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
     ports:
@@ -31,7 +31,7 @@ services:
       - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
     environment:
       - L1_RPC_URL=${L1_RPC_URL}
-      - L1_CHAIN_ID=1337
+      - L1_CHAIN_ID=${L1_CHAIN_ID}
       - ADMIN_ADDRESS=${ADMIN_ADDRESS}
       - ADMIN_PRIVATE_KEY=${ADMIN_PRIVATE_KEY}
       - BATCHER_ADDRESS=${BATCHER_ADDRESS}
@@ -39,6 +39,7 @@ services:
       - SEQUENCER_ADDRESS=${SEQUENCER_ADDRESS}
       - DEPLOYMENT_CONTEXT=europa
       - DEPLOYMENTS_PATH=/opt/optimism/packages/contracts-bedrock/deployments
+      - IMPL_SALT=$(openssl rand -hex 32)
     depends_on:
       layer1:
         condition: service_healthy
@@ -91,7 +92,7 @@ services:
       - L2_URL=http://op-geth:8551
       - SEQUENCER_PRIVATE_KEY=${SEQUENCER_PRIVATE_KEY}
       - L1_RPC_URL=${L1_RPC_URL}
-      - L1_RPC_KIND=basic
+      - L1_RPC_KIND=${L1_RPC_KIND}
     depends_on:
       - op-geth
 
