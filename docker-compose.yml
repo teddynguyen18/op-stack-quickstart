@@ -5,6 +5,9 @@ services:
       context: ganache-network
     environment:
       - MNEMONIC=${MNEMONIC}
+      - ADMIN_ADDRESS=${ADMIN_ADDRESS}
+      - BATCHER_ADDRESS=${BATCHER_ADDRESS}
+      - PROPOSER_ADDRESS=${PROPOSER_ADDRESS}
       # - VERBOSE=true # more verbose logging
       # - FORK_NETWORK=sepolia # fork from mainnet, sepolia, goerli
       - BLOCK_TIME=12
