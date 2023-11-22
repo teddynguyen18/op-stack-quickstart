@@ -40,3 +40,15 @@ docker compose up
 
 Layer 1 rpc is exposed to port 8545\
 Op stack rpc is exposed to port 8546
+
+### Test your network
+
+1. Get the address of the `L1StandardBridgeProxy` contract
+
+```shell
+cat ./.data/deployments/europa/L1StandardBridgeProxy.json | jq -r .address
+```
+
+2. Send some Layer1 ETH to the `L1StandardBridgeProxy` contract
+
+Grab the L1 bridge proxy contract address and, using the wallet that you want to have ETH on your Rollup, send that address a small amount of ETH on Ganache network (0.1 or less is fine). This will trigger a deposit that will mint ETH into your wallet on L2. It may take up to 5 minutes for that ETH to appear in your wallet on L2.
