@@ -1,0 +1,44 @@
+FROM golang:latest
+
+SHELL ["/bin/bash", "-c"]
+
+WORKDIR /opt
+
+RUN apt update && apt install -y jq
+
+# Install foundry
+COPY ./scripts/setup/setup-foundry.sh ./scripts/setup/
+RUN chmod +x ./scripts/setup/setup-foundry.sh
+RUN ./scripts/setup/setup-foundry.sh
+
+# Install Nodejs
+COPY ./scripts/setup/setup-nodejs.sh ./scripts/setup/
+RUN chmod +x ./scripts/setup/setup-nodejs.sh
+RUN ./scripts/setup/setup-nodejs.sh
+
+# Install pnpm
+RUN npm i -g pnpm
+
+ENV PATH "$PATH:/root/.foundry/bin"
+
+# Cleanup setup folder
+RUN rm -rf ./scripts/setup
+
+# Build the Optimism Monorepo
+COPY ../op-stack/optimism /opt/optimism
+WORKDIR /opt/optimism
+RUN pnpm install
+RUN pnpm build
+RUN make cannon-prestate
+
+WORKDIR /opt
+
+# Initiate config to deploy contract to L1
+COPY ./scripts/config.sh ./scripts/deploy.sh ./scripts/
+RUN chmod +x ./scripts/config.sh ./scripts/deploy.sh
+
+COPY ./data-correction/index.js ./data-correction/
+
+CMD ["./scripts/deploy.sh"]
+
+

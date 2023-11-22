@@ -1,0 +1,19 @@
+FROM golang:latest
+
+SHELL ["/bin/bash", "-c"]
+
+WORKDIR /opt
+
+RUN apt update
+
+COPY ../op-stack/op-geth /opt/op-geth
+WORKDIR /opt/op-geth
+RUN make geth
+
+WORKDIR /opt
+COPY ./scripts/start-op-geth.sh ./scripts/
+RUN chmod +x ./scripts/start-op-geth.sh
+
+CMD ["./scripts/start-op-geth.sh"]
+
+

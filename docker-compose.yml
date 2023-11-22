@@ -1,0 +1,120 @@
+version: '3'
+services:
+  layer1:
+    build:
+      context: ganache-network
+    environment:
+      - MNEMONIC=${MNEMONIC}
+      # - VERBOSE=true # more verbose logging
+      # - FORK_NETWORK=sepolia # fork from mainnet, sepolia, goerli
+      - BLOCK_TIME=12
+      - INITIAL_FUNDING=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
+    ports:
+      - '8545:8545'
+    volumes:
+      - ./.data/ganache:/app/.data # persist blockchain data
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl --data ''{"method":"eth_blockNumber","params":[],"id":1,"jsonrpc":"2.0"}'' -H "Content-Type: application/json" -X POST localhost:8545',
+        ]
+  contracts:
+    build:
+      context: europa
+      dockerfile: Dockerfile.contract
+    volumes:
+      - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
+      - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
+    environment:
+      - L1_RPC_URL=http://layer1:8545
+      - L1_CHAIN_ID=1337
+      - ADMIN_ADDRESS=${ADMIN_ADDRESS}
+      - ADMIN_PRIVATE_KEY=${ADMIN_PRIVATE_KEY}
+      - BATCHER_ADDRESS=${BATCHER_ADDRESS}
+      - PROPOSER_ADDRESS=${PROPOSER_ADDRESS}
+      - SEQUENCER_ADDRESS=${SEQUENCER_ADDRESS}
+      - DEPLOYMENT_CONTEXT=europa
+      - DEPLOYMENTS_PATH=/opt/optimism/packages/contracts-bedrock/deployments
+    depends_on:
+      layer1:
+        condition: service_healthy
+
+  config-generator:
+    build:
+      context: europa
+      dockerfile: Dockerfile.node
+      target: config-generator
+    volumes:
+      - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
+      - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
+      - .data/artifacts:/opt/artifacts
+    environment:
+      - L1_RPC_URL=http://layer1:8545
+      - DEPLOYMENT_CONTEXT=europa
+      - GENESIS_FILE=/opt/artifacts/genesis.json
+      - ROLLUP_FILE=/opt/artifacts/rollup.json
+      - JWT_FILE=/opt/artifacts/jwt.txt
+    depends_on:
+      contracts:
+        condition: service_completed_successfully
+
+  op-geth:
+    build:
+      context: europa
+      dockerfile: Dockerfile.geth
+    volumes:
+      - .data/artifacts:/opt/artifacts
+      - .data/op-geth/data:/opt/op-geth/datadir
+    environment:
+      - GENESIS_FILE=/opt/artifacts/genesis.json
+      - JWT_FILE=/opt/artifacts/jwt.txt
+    ports:
+      - '8546:8545'
+    depends_on:
+      config-generator:
+        condition: service_completed_successfully
+
+  op-node:
+    build:
+      context: europa
+      dockerfile: Dockerfile.node
+      target: op-node
+    volumes:
+      - .data/artifacts:/opt/artifacts
+    environment:
+      - ROLLUP_FILE=/opt/artifacts/rollup.json
+      - JWT_FILE=/opt/artifacts/jwt.txt
+      - L2_URL=http://op-geth:8551
+      - SEQUENCER_PRIVATE_KEY=${SEQUENCER_PRIVATE_KEY}
+      - L1_RPC_URL=http://layer1:8545
+      - L1_RPC_KIND=basic
+    depends_on:
+      - op-geth
+
+  op-batcher:
+    build:
+      context: europa
+      dockerfile: Dockerfile.batcher
+    environment:
+      - L2_RPC_URL=http://op-geth:8545
+      - L1_RPC_URL=http://layer1:8545
+      - ROLLUP_RPC_URL=http://op-node:8547
+      - BATCHER_PRIVATE_KEY=${BATCHER_PRIVATE_KEY}
+    depends_on:
+      - op-geth
+      - op-node
+
+  op-proposer:
+    build:
+      context: europa
+      dockerfile: Dockerfile.proposer
+    volumes:
+      - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
+    environment:
+      - L1_RPC_URL=http://layer1:8545
+      - ROLLUP_RPC_URL=http://op-node:8547
+      - PROPOSER_PRIVATE_KEY=${PROPOSER_PRIVATE_KEY}
+      - DEPLOYMENT_CONTEXT=europa
+    depends_on:
+      - op-node
