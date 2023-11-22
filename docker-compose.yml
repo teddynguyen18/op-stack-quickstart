@@ -8,7 +8,7 @@ services:
       # - VERBOSE=true # more verbose logging
       # - FORK_NETWORK=sepolia # fork from mainnet, sepolia, goerli
       - BLOCK_TIME=12
-      - INITIAL_FUNDING=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
+      - INITIAL_AMOUNT=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
     ports:
       - '8545:8545'
     volumes:
