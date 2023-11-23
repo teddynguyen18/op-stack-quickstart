@@ -9,7 +9,7 @@ services:
       - BATCHER_ADDRESS=${BATCHER_ADDRESS}
       - PROPOSER_ADDRESS=${PROPOSER_ADDRESS}
       - VERBOSE=true # more verbose logging
-      - FORK_NETWORK=mainnet # fork from mainnet, sepolia, goerli
+      # - FORK_NETWORK=mainnet # fork from mainnet, sepolia, goerli
       - BLOCK_TIME=12
       - INITIAL_AMOUNT=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
     ports:
@@ -47,11 +47,11 @@ services:
   config-generator:
     build:
       context: europa
-      dockerfile: Dockerfile.node
+      dockerfile: Dockerfile.op
       target: config-generator
     volumes:
-      - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
-      - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
+      - .data/deployments:/opt/deployments
+      - .data/deploy-config:/opt/deploy-config
       - .data/artifacts:/opt/artifacts
     environment:
       - L1_RPC_URL=${L1_RPC_URL}
@@ -69,7 +69,7 @@ services:
       dockerfile: Dockerfile.geth
     volumes:
       - .data/artifacts:/opt/artifacts
-      - .data/op-geth/data:/opt/op-geth/datadir
+      - .data/op-geth/data:/opt/datadir
     environment:
       - GENESIS_FILE=/opt/artifacts/genesis.json
       - JWT_FILE=/opt/artifacts/jwt.txt
@@ -82,7 +82,7 @@ services:
   op-node:
     build:
       context: europa
-      dockerfile: Dockerfile.node
+      dockerfile: Dockerfile.op
       target: op-node
     volumes:
       - .data/artifacts:/opt/artifacts
@@ -99,7 +99,8 @@ services:
   op-batcher:
     build:
       context: europa
-      dockerfile: Dockerfile.batcher
+      dockerfile: Dockerfile.op
+      target: op-batcher
     environment:
       - L2_RPC_URL=http://op-geth:8545
       - L1_RPC_URL=${L1_RPC_URL}
@@ -112,9 +113,10 @@ services:
   op-proposer:
     build:
       context: europa
-      dockerfile: Dockerfile.proposer
+      dockerfile: Dockerfile.op
+      target: op-proposer
     volumes:
-      - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
+      - .data/deployments:/opt/deployments
     environment:
       - L1_RPC_URL=${L1_RPC_URL}
       - ROLLUP_RPC_URL=http://op-node:8547

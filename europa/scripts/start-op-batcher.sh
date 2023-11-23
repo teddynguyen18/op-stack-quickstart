@@ -3,9 +3,7 @@
 # The below tells bash to stop the script if any of the commands fail
 set -ex
 
-cd /opt/optimism/op-batcher
-
-./bin/op-batcher \
+op-batcher \
     --l2-eth-rpc=$L2_RPC_URL \
     --rollup-rpc=$ROLLUP_RPC_URL \
     --poll-interval=1s \

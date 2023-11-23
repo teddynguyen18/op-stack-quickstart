@@ -1,19 +1,21 @@
-FROM golang:latest
-
-SHELL ["/bin/bash", "-c"]
+FROM golang:alpine as builder
 
 WORKDIR /opt
 
-RUN apt update
+RUN apk add --update --no-cache make 
 
 COPY ../op-stack/op-geth /opt/op-geth
 WORKDIR /opt/op-geth
 RUN make geth
 
+FROM alpine:latest
+
+COPY --from=builder /opt/op-geth/build/bin/geth /usr/local/bin/
+
 WORKDIR /opt
 COPY ./scripts/start-op-geth.sh ./scripts/
 RUN chmod +x ./scripts/start-op-geth.sh
 
-CMD ["./scripts/start-op-geth.sh"]
+CMD ["sh", "./scripts/start-op-geth.sh"]
 
 

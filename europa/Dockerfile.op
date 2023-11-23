@@ -1,0 +1,67 @@
+FROM golang:alpine as builder
+
+WORKDIR /opt
+
+RUN apk add --update --no-cache make
+
+COPY ../op-stack/optimism /opt/optimism
+
+WORKDIR /opt/optimism
+RUN make op-node op-batcher op-proposer
+
+WORKDIR /opt/optimism/op-node/cmd
+RUN go build -o op-node-cmd
+
+# ========== op-node ==========
+FROM alpine:latest as op-node
+
+COPY --from=builder /opt/optimism/op-node/bin/op-node /usr/local/bin/
+
+WORKDIR /opt
+COPY ./scripts/start-op-node.sh ./scripts/
+RUN chmod +x ./scripts/start-op-node.sh
+
+CMD ["sh", "./scripts/start-op-node.sh"]
+# ========== End op-node ==========
+
+# ========== op-batcher ==========
+FROM alpine:latest as op-batcher
+
+COPY --from=builder /opt/optimism/op-batcher/bin/op-batcher /usr/local/bin/
+
+WORKDIR /opt
+COPY ./scripts/start-op-batcher.sh ./scripts/
+RUN chmod +x ./scripts/start-op-batcher.sh
+
+CMD ["sh", "./scripts/start-op-batcher.sh"]
+# ========== End op-batcher ==========
+
+# ========== op-proposer ==========
+FROM alpine:latest as op-proposer
+
+RUN apk add --update --no-cache jq
+
+COPY --from=builder /opt/optimism/op-proposer/bin/op-proposer /usr/local/bin/
+
+WORKDIR /opt
+COPY ./scripts/start-op-proposer.sh ./scripts/
+RUN chmod +x ./scripts/start-op-proposer.sh
+
+CMD ["sh", "./scripts/start-op-proposer.sh"]
+# ========== End op-proposer ==========
+
+# ========== Config Generator ==========
+FROM alpine:latest as config-generator
+
+RUN apk add --update --no-cache openssl
+
+COPY --from=builder /opt/optimism/op-node/cmd/op-node-cmd /usr/local/bin/op-node-cmd
+
+WORKDIR /opt
+COPY ./scripts/generate.sh ./scripts/
+RUN chmod +x ./scripts/generate.sh
+
+CMD ["sh", "./scripts/generate.sh"]
+# ========== End Config Generator ==========
+
+

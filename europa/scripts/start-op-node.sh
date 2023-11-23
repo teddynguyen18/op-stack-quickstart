@@ -3,9 +3,7 @@
 # The below tells bash to stop the script if any of the commands fail
 set -ex
 
-cd /opt/optimism/op-node
-
-./bin/op-node \
+op-node \
 	--l2=$L2_URL \
 	--l2.jwt-secret=$JWT_FILE \
 	--sequencer.enabled \

@@ -2,9 +2,9 @@ FROM golang:latest
 
 SHELL ["/bin/bash", "-c"]
 
-WORKDIR /opt
+RUN apt update && apt install -y jq && rm -rf /var/lib/apt/lists/*
 
-RUN apt update && apt install -y jq
+WORKDIR /opt
 
 # Install foundry
 COPY ./scripts/setup/setup-foundry.sh ./scripts/setup/
@@ -27,6 +27,7 @@ RUN rm -rf ./scripts/setup
 # Build the Optimism Monorepo
 COPY ../op-stack/optimism /opt/optimism
 WORKDIR /opt/optimism
+RUN git submodule update --init --recursive
 RUN pnpm install
 RUN pnpm build
 RUN make cannon-prestate
