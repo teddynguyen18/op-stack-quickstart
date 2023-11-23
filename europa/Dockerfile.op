@@ -9,9 +9,6 @@ COPY ../op-stack/optimism /opt/optimism
 WORKDIR /opt/optimism
 RUN make op-node op-batcher op-proposer
 
-WORKDIR /opt/optimism/op-node/cmd
-RUN go build -o op-node-cmd
-
 # ========== op-node ==========
 FROM alpine:latest as op-node
 
