@@ -2,7 +2,7 @@
 
 To run Op-stack quickly in local.
 
-By default, the op stack will be started with Layer 1 is a Ganache network.
+By default, the op stack will be started with a Ganache network (block time 12s) as Layer 1.
 
 If you want to use another network instead of Ganache, just remove service layer1 in `docker-compose.yml` and change the `L1_RPC_URL` in `.env`
 
