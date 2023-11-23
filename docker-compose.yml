@@ -29,6 +29,7 @@ services:
     volumes:
       - .data/deployments:/opt/optimism/packages/contracts-bedrock/deployments
       - .data/deploy-config:/opt/optimism/packages/contracts-bedrock/deploy-config
+      - .data/artifacts:/opt/artifacts
     environment:
       - L1_RPC_URL=${L1_RPC_URL}
       - L1_CHAIN_ID=${L1_CHAIN_ID}
@@ -40,28 +41,12 @@ services:
       - DEPLOYMENT_CONTEXT=europa
       - DEPLOYMENTS_PATH=/opt/optimism/packages/contracts-bedrock/deployments
       - IMPL_SALT=$(openssl rand -hex 32)
-    depends_on:
-      layer1:
-        condition: service_healthy
-
-  config-generator:
-    build:
-      context: europa
-      dockerfile: Dockerfile.op
-      target: config-generator
-    volumes:
-      - .data/deployments:/opt/deployments
-      - .data/deploy-config:/opt/deploy-config
-      - .data/artifacts:/opt/artifacts
-    environment:
-      - L1_RPC_URL=${L1_RPC_URL}
-      - DEPLOYMENT_CONTEXT=europa
       - GENESIS_FILE=/opt/artifacts/genesis.json
       - ROLLUP_FILE=/opt/artifacts/rollup.json
       - JWT_FILE=/opt/artifacts/jwt.txt
     depends_on:
-      contracts:
-        condition: service_completed_successfully
+      layer1:
+        condition: service_healthy
 
   op-geth:
     build:
@@ -76,7 +61,7 @@ services:
     ports:
       - '8546:8545'
     depends_on:
-      config-generator:
+      contracts:
         condition: service_completed_successfully
 
   op-node:

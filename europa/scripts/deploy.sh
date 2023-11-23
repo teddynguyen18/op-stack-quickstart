@@ -27,3 +27,5 @@ else
     node /opt/data-correction/index.js
 fi
 
+/opt/scripts/generate.sh
+

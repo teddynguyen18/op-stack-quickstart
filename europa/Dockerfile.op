@@ -49,19 +49,3 @@ RUN chmod +x ./scripts/start-op-proposer.sh
 
 CMD ["sh", "./scripts/start-op-proposer.sh"]
 # ========== End op-proposer ==========
-
-# ========== Config Generator ==========
-FROM alpine:latest as config-generator
-
-RUN apk add --update --no-cache openssl
-
-COPY --from=builder /opt/optimism/op-node/cmd/op-node-cmd /usr/local/bin/op-node-cmd
-
-WORKDIR /opt
-COPY ./scripts/generate.sh ./scripts/
-RUN chmod +x ./scripts/generate.sh
-
-CMD ["sh", "./scripts/generate.sh"]
-# ========== End Config Generator ==========
-
-

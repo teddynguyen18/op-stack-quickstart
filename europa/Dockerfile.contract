@@ -34,8 +34,8 @@ RUN make cannon-prestate
 WORKDIR /opt
 
 # Initiate config to deploy contract to L1
-COPY ./scripts/config.sh ./scripts/deploy.sh ./scripts/
-RUN chmod +x ./scripts/config.sh ./scripts/deploy.sh
+COPY ./scripts/config.sh ./scripts/deploy.sh ./scripts/generate.sh ./scripts/
+RUN chmod +x ./scripts/config.sh ./scripts/deploy.sh ./scripts/generate.sh
 
 COPY ./data-correction/index.js ./data-correction/
 
