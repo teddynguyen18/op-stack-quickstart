@@ -11,11 +11,10 @@ If you want to use another network instead of Ganache, just remove service layer
 ### Update submodules
 
 ```shell
-# For the first time
 git submodule update --init
 
-# After this to update you can just run
-git submodule update
+# Update recursive for optimism repository
+git submodule update --recursive europa/op-stack/optimism
 ```
 
 ### Special step (Ignore this step if you don't use ganache network\)

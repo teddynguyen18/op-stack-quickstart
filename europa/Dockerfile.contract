@@ -25,9 +25,8 @@ ENV PATH "$PATH:/root/.foundry/bin"
 RUN rm -rf ./scripts/setup
 
 # Build the Optimism Monorepo
-COPY ../op-stack/optimism /opt/optimism
+COPY ./op-stack/optimism/ ./optimism
 WORKDIR /opt/optimism
-RUN git submodule update --init --recursive
 RUN pnpm install
 RUN pnpm build
 RUN make cannon-prestate
