@@ -1,9 +1,10 @@
 const { MNEMONIC: mnemonic, VERBOSE, FORK_NETWORK: network, BLOCK_TIME: blockTime } = process.env;
 const GANACHE_DATA_PATH = './.data';
 
-const ganacheServerOption = {
-  logging: { verbose: VERBOSE === 'true' },
-};
+const ganacheServerOption = {};
+
+if (VERBOSE === 'true') ganacheServerOption.logging = { verbose: true };
+else ganacheServerOption.logging = { quiet: true };
 
 if (mnemonic) {
   ganacheServerOption.wallet = { mnemonic };
