@@ -85,7 +85,7 @@ config=$(cat << EOL
 
   "faultGameAbsolutePrestate": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "faultGameMaxDepth": 63,
-  "faultGameMaxDuration": 604800
+  "faultGameMaxDuration": 300
 }
 EOL
 )

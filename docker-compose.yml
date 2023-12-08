@@ -40,7 +40,6 @@ services:
       - SEQUENCER_ADDRESS=${SEQUENCER_ADDRESS}
       - DEPLOYMENT_CONTEXT=europa
       - DEPLOYMENTS_PATH=/opt/optimism/packages/contracts-bedrock/deployments
-      - IMPL_SALT=$(openssl rand -hex 32)
       - GENESIS_FILE=/opt/artifacts/genesis.json
       - ROLLUP_FILE=/opt/artifacts/rollup.json
       - JWT_FILE=/opt/artifacts/jwt.txt

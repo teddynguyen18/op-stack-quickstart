@@ -5,6 +5,7 @@ set -ex
 
 CONTRACTS_FOLDER="/opt/optimism/packages/contracts-bedrock"
 DEPLOYMENT_FOLDER="deployments/$DEPLOYMENT_CONTEXT"
+IMPL_SALT=$(openssl rand -hex 32)
 
 function deploy {
     # Deploy L1 smart contracts
