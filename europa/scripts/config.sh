@@ -24,7 +24,7 @@ blockhash=$(echo "$block" | awk '/hash/ { print $2 }')
 config=$(cat << EOL
 {
   "finalSystemOwner": "$ADMIN_ADDRESS",
-  "portalGuardian": "$ADMIN_ADDRESS",
+  "superchainConfigGuardian": "$ADMIN_ADDRESS",
 
   "l1StartingBlockTag": "$blockhash",
 
@@ -66,8 +66,8 @@ config=$(cat << EOL
   "gasPriceOracleScalar": 1000000,
 
   "enableGovernance": true,
-  "governanceTokenSymbol": "OP",
-  "governanceTokenName": "Optimism",
+  "governanceTokenSymbol": "EUROPA",
+  "governanceTokenName": "EUROPA",
   "governanceTokenOwner": "$ADMIN_ADDRESS",
 
   "l2GenesisBlockGasLimit": "0x1c9c380",
@@ -85,7 +85,11 @@ config=$(cat << EOL
 
   "faultGameAbsolutePrestate": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "faultGameMaxDepth": 63,
-  "faultGameMaxDuration": 300
+  "faultGameMaxDuration": 300,
+
+  "outputBisectionGameGenesisBlock": 0,
+  "outputBisectionGameGenesisOutputRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "outputBisectionGameSplitDepth": 14
 }
 EOL
 )
