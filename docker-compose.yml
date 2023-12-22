@@ -13,7 +13,7 @@ services:
       - BLOCK_TIME=12
       - INITIAL_AMOUNT=1 # initial ETH balance for Admin, Sequencer, Batcher, Proposer
     ports:
-      - '8545:8545'
+      - '8545:7545'
     volumes:
       - ./.data/ganache:/app/.data # persist blockchain data
     healthcheck:
@@ -77,6 +77,8 @@ services:
       - SEQUENCER_PRIVATE_KEY=${SEQUENCER_PRIVATE_KEY}
       - L1_RPC_URL=${L1_RPC_URL}
       - L1_RPC_KIND=${L1_RPC_KIND}
+    ports:
+      - '8547:8547'
     depends_on:
       - op-geth
 

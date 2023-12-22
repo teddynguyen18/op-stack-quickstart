@@ -5,7 +5,7 @@ const ganacheServerOption = require('./utils/ganache-config');
 const setup = require('./setup');
 
 const { RPC_PORT = 8545 } = process.env;
-const GANACHE_PORT = 0;
+const GANACHE_PORT = 7545;
 
 (async function () {
   const ganacheServer = ganache.server(ganacheServerOption);
@@ -15,7 +15,7 @@ const GANACHE_PORT = 0;
 
   const rpcServer = fastify();
 
-  ganacheServer.listen(GANACHE_PORT, '127.0.0.1', async err => {
+  ganacheServer.listen(GANACHE_PORT, '0.0.0.0', async err => {
     if (err) throw err;
 
     const { port: ganachePort } = ganacheServer.address();
