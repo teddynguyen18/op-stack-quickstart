@@ -1,4 +1,3 @@
-version: '3'
 services:
   layer1:
     build:
