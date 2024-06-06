@@ -21,15 +21,15 @@ timestamp=$(echo "$block" | awk '/timestamp/ { print $2 }')
 blockhash=$(echo "$block" | awk '/hash/ { print $2 }')
 
 # Generate the config file
+# "l2GenesisEcotoneTimeOffset": "0x0",
+# "l2GenesisDeltaTimeOffset": "0x0",
+# "l2GenesisCanyonTimeOffset": "0x0",
 config=$(cat << EOL
 {
-  "finalSystemOwner": "$ADMIN_ADDRESS",
-  "superchainConfigGuardian": "$ADMIN_ADDRESS",
-
   "l1StartingBlockTag": "$blockhash",
 
   "l1ChainID": $L1_CHAIN_ID,
-  "l2ChainID": 42069,
+  "l2ChainID": $L2_CHAIN_ID,
   "l2BlockTime": 2,
   "l1BlockTime": 12,
 
@@ -54,6 +54,8 @@ config=$(cat << EOL
   "baseFeeVaultRecipient": "$ADMIN_ADDRESS",
   "l1FeeVaultRecipient": "$ADMIN_ADDRESS",
   "sequencerFeeVaultRecipient": "$ADMIN_ADDRESS",
+  "finalSystemOwner": "$ADMIN_ADDRESS",
+  "superchainConfigGuardian": "$ADMIN_ADDRESS",
 
   "baseFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "l1FeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
@@ -62,7 +64,7 @@ config=$(cat << EOL
   "l1FeeVaultWithdrawalNetwork": 0,
   "sequencerFeeVaultWithdrawalNetwork": 0,
 
-  "gasPriceOracleOverhead": 2100,
+  "gasPriceOracleOverhead": 0,
   "gasPriceOracleScalar": 1000000,
 
   "enableGovernance": true,
@@ -83,13 +85,17 @@ config=$(cat << EOL
   "requiredProtocolVersion": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "recommendedProtocolVersion": "0x0000000000000000000000000000000000000000000000000000000000000000",
 
-  "faultGameAbsolutePrestate": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "faultGameMaxDepth": 63,
-  "faultGameMaxDuration": 300,
+  "faultGameAbsolutePrestate": "0x03c7ae758795765c6664a5d39bf63841c71ff191e9189522bad8ebff5d4eca98",
+  "faultGameMaxDepth": 44,
+  "faultGameClockExtension": 0,
+  "faultGameMaxClockDuration": 600,
+  "faultGameGenesisBlock": 0,
+  "faultGameGenesisOutputRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "faultGameSplitDepth": 14,
+  "faultGameWithdrawalDelay": 604800,
 
-  "outputBisectionGameGenesisBlock": 0,
-  "outputBisectionGameGenesisOutputRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "outputBisectionGameSplitDepth": 14
+  "preimageOracleMinProposalSize": 1800000,
+  "preimageOracleChallengePeriod": 86400
 }
 EOL
 )

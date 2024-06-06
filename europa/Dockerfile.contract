@@ -37,8 +37,6 @@ WORKDIR /opt
 COPY ./scripts/config.sh ./scripts/deploy.sh ./scripts/generate.sh ./scripts/
 RUN chmod +x ./scripts/config.sh ./scripts/deploy.sh ./scripts/generate.sh
 
-COPY ./data-correction/index.js ./data-correction/
-
 CMD ["./scripts/deploy.sh"]
 
 

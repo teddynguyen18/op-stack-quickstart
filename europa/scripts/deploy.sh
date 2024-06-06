@@ -4,28 +4,25 @@
 set -ex
 
 CONTRACTS_FOLDER="/opt/optimism/packages/contracts-bedrock"
-DEPLOYMENT_FOLDER="deployments/$DEPLOYMENT_CONTEXT"
-IMPL_SALT=$(openssl rand -hex 32)
+CONTRACT_ADDRESSES_PATH="deployments/$L1_CHAIN_ID-deploy.json"
 
 function deploy {
     # Deploy L1 smart contracts
     echo Start deploying L1 smart contracts
-    forge script scripts/Deploy.s.sol:Deploy --private-key $ADMIN_PRIVATE_KEY --broadcast --rpc-url $L1_RPC_URL
-    forge script scripts/Deploy.s.sol:Deploy --sig 'sync()' --rpc-url $L1_RPC_URL
+    IMPL_SALT=$(openssl rand -hex 32) forge script scripts/Deploy.s.sol:Deploy --private-key $ADMIN_PRIVATE_KEY --broadcast --rpc-url $L1_RPC_URL --slow
+    CONTRACT_ADDRESSES_PATH="$CONTRACT_ADDRESSES_PATH" forge script scripts/L2Genesis.s.sol:L2Genesis --sig 'runWithAllUpgrades()' --rpc-url $L1_RPC_URL
+    mv state-dump-$L2_CHAIN_ID-delta.json state-dump-$L2_CHAIN_ID-ecotone.json state-dump-$L2_CHAIN_ID.json deployments/
     echo Finish deploying L1 smart contracts
 }
 
-if [ -d "$CONTRACTS_FOLDER/$DEPLOYMENT_FOLDER" ]; then
-    echo "Directory $CONTRACTS_FOLDER/$DEPLOYMENT_FOLDER exists. Skip deployment." 
+if [ -f "$CONTRACTS_FOLDER/$CONTRACT_ADDRESSES_PATH" ]; then
+    echo "$CONTRACT_ADDRESSES_PATH exists. Skip deployment." 
 else
     /opt/scripts/config.sh
 
     cd $CONTRACTS_FOLDER
-    mkdir $DEPLOYMENT_FOLDER
     
     deploy
-
-    node /opt/data-correction/index.js
 fi
 
 /opt/scripts/generate.sh

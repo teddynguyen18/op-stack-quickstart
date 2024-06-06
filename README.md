@@ -45,7 +45,7 @@ Op stack rpc is exposed to port 8546
 1. Get the address of the `L1StandardBridgeProxy` contract
 
 ```shell
-cat ./.data/deployments/europa/L1StandardBridgeProxy.json | jq -r .address
+cat ./.data/deployments/europa/{chain-id}-deploy.json.json | jq -r .L1StandardBridgeProxy
 ```
 
 2. Send some Layer1 ETH to the `L1StandardBridgeProxy` contract
